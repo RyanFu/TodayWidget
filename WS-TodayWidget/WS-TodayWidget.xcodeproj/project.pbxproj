@@ -23,7 +23,6 @@
 		88C5CDE91DB0CCE000828F49 /* 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88C5CDE31DB0CCE000828F49 /* 3@2x.png */; };
 		88C5CDEA1DB0CCE000828F49 /* 4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88C5CDE41DB0CCE000828F49 /* 4@2x.png */; };
 		88C5CDEB1DB0CCE000828F49 /* 5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88C5CDE51DB0CCE000828F49 /* 5@2x.png */; };
-		88C5CDEE1DB0CE6C00828F49 /* WSButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C5CDED1DB0CE6C00828F49 /* WSButton.m */; };
 		88C5CDF21DB0D66500828F49 /* asdadasdsdfsdf.gif in Resources */ = {isa = PBXBuildFile; fileRef = 88C5CDF11DB0D66500828F49 /* asdadasdsdfsdf.gif */; };
 /* End PBXBuildFile section */
 
@@ -74,8 +73,6 @@
 		88C5CDE31DB0CCE000828F49 /* 3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3@2x.png"; sourceTree = "<group>"; };
 		88C5CDE41DB0CCE000828F49 /* 4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "4@2x.png"; sourceTree = "<group>"; };
 		88C5CDE51DB0CCE000828F49 /* 5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5@2x.png"; sourceTree = "<group>"; };
-		88C5CDEC1DB0CE6C00828F49 /* WSButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSButton.h; sourceTree = "<group>"; };
-		88C5CDED1DB0CE6C00828F49 /* WSButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSButton.m; sourceTree = "<group>"; };
 		88C5CDF11DB0D66500828F49 /* asdadasdsdfsdf.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = asdadasdsdfsdf.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,8 +153,6 @@
 				88C5CDDF1DB0CCE000828F49 /* img */,
 				88C5CDC41DB0CB4500828F49 /* TodayViewController.h */,
 				88C5CDC51DB0CB4500828F49 /* TodayViewController.m */,
-				88C5CDEC1DB0CE6C00828F49 /* WSButton.h */,
-				88C5CDED1DB0CE6C00828F49 /* WSButton.m */,
 				88C5CDC71DB0CB4500828F49 /* MainInterface.storyboard */,
 				88C5CDCA1DB0CB4500828F49 /* Info.plist */,
 			);
@@ -296,7 +291,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				88C5CDC61DB0CB4500828F49 /* TodayViewController.m in Sources */,
-				88C5CDEE1DB0CE6C00828F49 /* WSButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
