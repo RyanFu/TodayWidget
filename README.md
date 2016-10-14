@@ -28,6 +28,7 @@
 
 
 （3）详细demo请看GitHub：https://github.com/Zws-China/TodayWidget
+    喜欢的点个星。 (*^__^*)
 
 
 
