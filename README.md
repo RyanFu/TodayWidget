@@ -54,6 +54,7 @@
     }
     else if([action containsString:@"openNewsID="]) {
 
+        NSString *IDString = [action substringFromIndex:@"openNewsID=".length];
 
         NewsDetailController *newsCtrl = [[NewsDetailController alloc]init];
         newsCtrl.newsID = IDString;
