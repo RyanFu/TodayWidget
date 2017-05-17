@@ -1,6 +1,7 @@
 # TodayWidget
 通知中心视图，下拉通知中心显示的内容
 
+详细demo请看GitHub：[https://github.com/Zws-China/TodayWidget](https://github.com/Zws-China/TodayWidget)
 
 # PhotoShoot
 ![这里写图片描述](http://img.blog.csdn.net/20170517150323267?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjY1OTgwNzc=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
@@ -68,8 +69,7 @@
 
 
 
-（3）详细demo请看GitHub：https://github.com/Zws-China/TodayWidget
-    喜欢的点个星。 (*^__^*)
+（5）喜欢的点个星。 (*^__^*)
 
 
 
