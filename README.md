@@ -26,6 +26,45 @@
     self.preferredContentSize = CGSizeMake(self.view.bounds.size.width, 200));
 
 
+ (3)点击todayWidget事件
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView  deselectRowAtIndexPath:indexPath animated:YES];
+
+    NewsModel *model = [modelArray objectAtIndex:indexPath.row];
+    NSString *string = [NSString stringWithFormat:@"iOSWidgetApp://action=openNewsID=%@",model.newsID];
+
+    [self.extensionContext openURL:[NSURL URLWithString:string] completionHandler:nil];
+}
+
+- (void)moreAction {
+    [self.extensionContext openURL:[NSURL URLWithString:@"iOSWidgetApp://action=openAPP"] completionHandler:nil];
+}
+
+ (4)处理点击事件  在AppDelegate.m中添加
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    NSLog(@"%@",url);
+
+    NSString* prefix = @"iOSWidgetApp://action=";
+    if ([[url absoluteString] rangeOfString:prefix].location != NSNotFound) {
+    NSString* action = [[url absoluteString] substringFromIndex:prefix.length];
+    if ([action isEqualToString:@"openAPP"]) {
+        //打开APP，不用处理
+    }
+    else if([action containsString:@"openNewsID="]) {
+
+
+        NewsDetailController *newsCtrl = [[NewsDetailController alloc]init];
+        newsCtrl.newsID = IDString;
+        UINavigationController *NAV = (UINavigationController*)self.window.rootViewController;
+        [NAV pushViewController:newsCtrl animated:YES];
+    }
+}
+
+    return  YES;
+}
+
+
 
 （3）详细demo请看GitHub：https://github.com/Zws-China/TodayWidget
     喜欢的点个星。 (*^__^*)
