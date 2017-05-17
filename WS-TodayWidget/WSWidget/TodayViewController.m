@@ -1,128 +1,181 @@
 //
 //  TodayViewController.m
-//  WSWidget
+//  water
 //
-//  Created by iMac on 16/10/14.
-//  Copyright © 2016年 zws. All rights reserved.
+//  Created by iMac on 17/5/17.
+//  Copyright © 2017年 zws. All rights reserved.
 //
 
 #import "TodayViewController.h"
 #import <NotificationCenter/NotificationCenter.h>
-#include <objc/runtime.h>
+#import "AFNetworking.h"
+#import "NewsCell.h"
+
+#import "Masonry.h"
 
 
-#define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define stsystemVersion  [[[UIDevice currentDevice] systemVersion] floatValue]
 
-@interface TodayViewController () <NCWidgetProviding>
-@property (strong, nonatomic) NSTimer *timer;
-@property (strong, nonatomic) UILabel *label;
+#define cellHeight 85
+
+
+@interface TodayViewController () <NCWidgetProviding,UITableViewDataSource,UITableViewDelegate>
+
+@property (nonatomic,strong)UITableView *dynamicTableView;
+
 @end
 
-@implementation TodayViewController
+@implementation TodayViewController {
+    
+    NewsCell *dynamicCell;
+    
+    AFHTTPSessionManager *manager;
+    
+    NSMutableArray *modelArray;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    NSDate *date = [NSDate date];
-    NSDateFormatter*df = [[NSDateFormatter alloc]init];//格式化
-    [df setDateFormat:@"yyyy年MM月dd日 HH:mm:ss"];
-    NSString* s1 = [df stringFromDate:date];
-    _label = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, kScreenWidth, 20)];
-    _label.text = s1;
-    _label.font = [UIFont systemFontOfSize:16];
-    _label.textColor = [UIColor whiteColor];
-    _label.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:_label];
-
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(refreshV) userInfo:nil repeats:YES];
-    self.timer = timer;
     
-    CGFloat width = kScreenWidth - 70;
-    NSArray *titleArr = @[@"定位", @"WiFi",  @"蜂窝", @"通知", @"声音", @"墙纸"];
-    for (int i=0; i < titleArr.count; i++) {
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(10 + (width/6+10)*i, 30, width/6, width/6)];
-        [btn.titleLabel setContentMode:UIViewContentModeScaleToFill];
+    //    self.preferredContentSize = CGSizeMake(self.view.frame.size.width, cellHeight+30);//显示大小
+    
+    manager = [AFHTTPSessionManager manager];
+    
+    [self requestNet];
+    
+    
+    UIButton *footBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [footBtn setTitle:@"查看更多" forState:UIControlStateNormal];
+    [footBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [footBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+    footBtn.layer.cornerRadius = 5;
+    [footBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:.3]];
+    [self.view addSubview:footBtn];
+    [footBtn addTarget:self action:@selector(moreAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    [footBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view.mas_left).offset(20);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-12.5);
+        make.right.equalTo(self.view.mas_right).offset(-20);
+        make.height.equalTo(@25);
+    }];
+    
+    
+    [self setPreferredContentSize:CGSizeMake(self.view.frame.size.width, cellHeight*4+ 50)];
+    
+}
 
-        btn.backgroundColor = [UIColor clearColor];
-        [btn setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d.png", i]] forState:UIControlStateNormal];
-        [btn setTitle:titleArr[i] forState:UIControlStateNormal];
-        btn.titleLabel.font = [UIFont systemFontOfSize:13];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [btn setTitleEdgeInsets:UIEdgeInsetsMake(btn.frame.size.height+20, 0, 0, 0)];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if (stsystemVersion < 10.0) {
         
-
-        btn.tag = i;
-        [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:btn];
-    }
-
-    
-    self.preferredContentSize = CGSizeMake(self.view.frame.size.width, 30+width/6+20+5);//显示大小
-
-    
-}
-
-- (void)refreshV {
-    
-    NSDate *date = [NSDate date];
-    NSDateFormatter*df = [[NSDateFormatter alloc]init];//格式化
-    [df setDateFormat:@"yyyy年MM月dd日 HH:mm:ss"];
-    NSString* s1 = [df stringFromDate:date];
-    _label.text = s1;
-    
-}
-
-- (void)btnAction:(UIButton *)btn {
-    switch (btn.tag) {
-        case 0: {
-            // 定位
-            NSURL *url = [NSURL URLWithString:@"prefs:root=LOCATION_SERVICES"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
+        if (modelArray.count > 4) {
+            CGFloat height = modelArray.count * cellHeight ;
+            [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
         }
-        case 1: {
-            // WiFi
-            NSURL *url = [NSURL URLWithString:@"prefs:root=WIFI"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
+        else {
+            CGFloat height = modelArray.count * cellHeight ;
+            height         = height > cellHeight ? height : cellHeight;
+            [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
         }
-        case 2: {
-            // Network
-            NSURL *url = [NSURL URLWithString:@"prefs:root=MOBILE_DATA_SETTINGS_ID"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
-        }
-        case 3: {
-            // Notification
-            NSURL *url = [NSURL URLWithString:@"prefs:root=NOTIFICATIONS_ID"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
-        }
-        case 4: {
-            // Sounds
-            NSURL *url = [NSURL URLWithString:@"prefs:root=Sounds"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
-        }
-        case 5: {
-            //墙纸
-            NSURL *url = [NSURL URLWithString:@"prefs:root=Wallpaper"];
-            [self.extensionContext openURL:url completionHandler:nil];
-            break;
-        }
-        default:
-            break;
     }
 }
 
+
+//第一次进来请求
+- (void)requestNet {
+    
+    //文章列表
+    NSString *articleURL = @"http://api.juheapi.com/japi/toh?key=a73f344e240848441451c4f283212128&v=1.0&month=9&day=14";
+    [manager GET:articleURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        [self creatTableView];//创建tableView
+        
+        NSArray *articleArray = responseObject[@"result"];
+        modelArray = [NSMutableArray array];
+        for (NSDictionary *dic in articleArray) {
+            
+            NewsModel *model = [[NewsModel alloc]init];
+            
+            model.cellTitle = dic[@"title"];//单元格上的主标题
+            model.imageUrl = dic[@"pic"];
+            model.newsID = dic[@"_id"];
+            model.time = dic[@"lunar"];
+            [modelArray addObject:model];
+            
+        }
+        
+        [self.dynamicTableView reloadData];
+        
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    }];
+    
+    
+}
+
+- (void)creatTableView {
+    
+    _dynamicTableView  = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _dynamicTableView.dataSource  = self;
+    _dynamicTableView.delegate = self;
+    _dynamicTableView.tableFooterView = [[UIView alloc] init];
+    [self.view addSubview:_dynamicTableView];
+    
+    [_dynamicTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view.mas_left);
+        make.top.equalTo(self.view.mas_top);
+        make.right.equalTo(self.view.mas_right);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-50);
+    }];
+    
+}
+
+
+#pragma mark - UITableViewDataSource,UITableViewDelegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return modelArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *identifier = @"dynamicCell";
+    dynamicCell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (dynamicCell == nil) {
+        
+        dynamicCell = [[NewsCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    
+    dynamicCell.model = modelArray[indexPath.row];//传model   MVC
+    
+    return dynamicCell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 85;
+}
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView  deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NewsModel *model = [modelArray objectAtIndex:indexPath.row];
+    NSString *string = [NSString stringWithFormat:@"iOSWidgetApp://action=openNewsID=%@",model.newsID];
+    
+    [self.extensionContext openURL:[NSURL URLWithString:string] completionHandler:nil];
+}
+
+- (void)moreAction {
+    [self.extensionContext openURL:[NSURL URLWithString:@"iOSWidgetApp://action=openAPP"] completionHandler:nil];
+}
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
-
+    
     completionHandler(NCUpdateResultNewData);
 }
-- (UIEdgeInsets)widgetMarginInsetsForProposedMarginInsets:(UIEdgeInsets)defaultMarginInsets {
-    return UIEdgeInsetsZero;
+- (UIEdgeInsets)widgetMarginInsetsForProposedMarginInsets:(UIEdgeInsets)defaultMarginInsets
+{
+    return  UIEdgeInsetsMake(0, 0, 0, 0);
 }
-
 @end

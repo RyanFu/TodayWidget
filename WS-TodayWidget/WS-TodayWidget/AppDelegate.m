@@ -1,12 +1,15 @@
 //
 //  AppDelegate.m
-//  WS-TodayWidget
+//  todayWidget123
 //
-//  Created by iMac on 16/10/14.
-//  Copyright © 2016年 zws. All rights reserved.
+//  Created by iMac on 17/5/17.
+//  Copyright © 2017年 zws. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
+#import "NewsDetailController.h"
+
 
 @interface AppDelegate ()
 
@@ -16,8 +19,43 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    
+    
+    self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:[[ViewController alloc] init]];
+    
+    
     return YES;
+}
+
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    NSLog(@"%@",url);
+    NSLog(@"%@",sourceApplication);
+    NSLog(@"%@",annotation);
+    NSLog(@"%@",[url absoluteString]);
+    
+    NSString* prefix = @"iOSWidgetApp://action=";
+    if ([[url absoluteString] rangeOfString:prefix].location != NSNotFound) {
+        NSString* action = [[url absoluteString] substringFromIndex:prefix.length];
+        if ([action isEqualToString:@"openAPP"]) {
+            //打开APP
+        }
+        else if([action containsString:@"openNewsID="]) {
+            NSString *IDString = [action substringFromIndex:@"openNewsID=".length];
+            //            BasicHomeViewController *vc = (BasicHomeViewController*)self.window.rootViewController;
+            //            [vc.tabbar selectAtIndex:2];
+            
+            
+            NewsDetailController *newsCtrl = [[NewsDetailController alloc]init];
+            newsCtrl.newsID = IDString;
+            UINavigationController *NAV = (UINavigationController*)self.window.rootViewController;
+            [NAV pushViewController:newsCtrl animated:YES];
+        }
+    }
+    
+    return  YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
