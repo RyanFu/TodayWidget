@@ -65,12 +65,48 @@
     
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    if (stsystemVersion < 10.0) {
+//-(void)viewWillAppear:(BOOL)animated{
+//    [super viewWillAppear:animated];
+//    if (stsystemVersion < 10.0) {
+//        
+//        if (modelArray.count > 4) {
+//            CGFloat height = 4 * cellHeight ;
+//            [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
+//        }
+//        else {
+//            CGFloat height = modelArray.count * cellHeight ;
+//            height         = height > cellHeight ? height : cellHeight;
+//            [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
+//        }
+//    }
+//}
+
+
+//第一次进来请求
+- (void)requestNet {
+    
+    //文章列表
+    NSString *articleURL = @"http://wangyi.butterfly.mopaasapp.com/news/api?type=war&page=1&limit=10";
+    [manager GET:articleURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        [self creatTableView];//创建tableView
+        
+        NSArray *articleArray = responseObject[@"list"];
+        modelArray = [NSMutableArray array];
+        for (NSDictionary *dic in articleArray) {
+            
+            NewsModel *model = [[NewsModel alloc]init];
+            
+            model.cellTitle = dic[@"title"];//单元格上的主标题
+            model.imageUrl = dic[@"imgurl"];
+            model.newsID = dic[@"id"];
+            model.time = dic[@"time"];
+            [modelArray addObject:model];
+            
+        }
         
         if (modelArray.count > 4) {
-            CGFloat height = modelArray.count * cellHeight ;
+            CGFloat height = 4 * cellHeight ;
             [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
         }
         else {
@@ -78,33 +114,6 @@
             height         = height > cellHeight ? height : cellHeight;
             [self setPreferredContentSize:CGSizeMake(0, height+ 50)];
         }
-    }
-}
-
-
-//第一次进来请求
-- (void)requestNet {
-    
-    //文章列表
-    NSString *articleURL = @"http://api.juheapi.com/japi/toh?key=a73f344e240848441451c4f283212128&v=1.0&month=9&day=14";
-    [manager GET:articleURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self creatTableView];//创建tableView
-        
-        NSArray *articleArray = responseObject[@"result"];
-        modelArray = [NSMutableArray array];
-        for (NSDictionary *dic in articleArray) {
-            
-            NewsModel *model = [[NewsModel alloc]init];
-            
-            model.cellTitle = dic[@"title"];//单元格上的主标题
-            model.imageUrl = dic[@"pic"];
-            model.newsID = dic[@"_id"];
-            model.time = dic[@"lunar"];
-            [modelArray addObject:model];
-            
-        }
-        
         [self.dynamicTableView reloadData];
         
         

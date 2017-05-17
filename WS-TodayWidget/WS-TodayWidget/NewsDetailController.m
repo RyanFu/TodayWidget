@@ -71,25 +71,21 @@
 
 - (void)loadNews {
     
-    NSString *urlStr = [NSString stringWithFormat:@"http://api.juheapi.com/japi/tohdet?key=a73f344e240848441451c4f283212128&v=1.0&id=%@",self.newsID];
+    NSString *urlStr = [NSString stringWithFormat:@"http://wangyi.butterfly.mopaasapp.com/detail/api?simpleId=%@",self.newsID];
         [_manager GET:urlStr parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-            NSArray *array = responseObject[@"result"];
-            if (array.count > 0) {
-                
-                NSDictionary *dic = [array lastObject];
+//            NSArray *array = responseObject[@"result"];
+//            if (array.count > 0) {
+            
+                NSDictionary *dic = responseObject;
                 
                 //新闻的html
                 NSMutableString *htmlStr = [[NSMutableString alloc]initWithString:dic[@"content"] ];
-                
-                NSMutableString *imgStr = [NSMutableString stringWithFormat:@"<p><img src=\"%@\"<br/></p>",dic[@"pic"]];
 
-                NSString *imgHtmlStr = [imgStr stringByAppendingString:htmlStr];
-                
                 //写一段接收主标题的html字符串,直接拼接到字符串
                 titleStr = [dic objectForKey:@"title"];
                 NSMutableString *allTitleStr = [NSMutableString stringWithFormat:@"<p><span style=\"line-height:1;font-size:19px;\"><strong>%@</strong></p>",titleStr];
-                NSString * newHtmlStr = [allTitleStr stringByAppendingString:imgHtmlStr];
+                NSString * newHtmlStr = [allTitleStr stringByAppendingString:htmlStr];
                 
                 //设置导航栏为当前新闻的名字
                 self.navigationItem.title = titleStr;
@@ -97,10 +93,7 @@
                 //加载html
                 [_webView loadHTMLString:[self reSizeImageWithHTML:newHtmlStr] baseURL:nil];
                 
-            }
-            else {
-            }
-            
+           
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
         }];

@@ -49,6 +49,7 @@
 		886149D71ECC230800DDED27 /* NewsDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 886149D61ECC230800DDED27 /* NewsDetailController.m */; };
 		886149DC1ECC231F00DDED27 /* NewsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 886149D91ECC231F00DDED27 /* NewsCell.m */; };
 		886149DD1ECC231F00DDED27 /* NewsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 886149DB1ECC231F00DDED27 /* NewsModel.m */; };
+		886149DE1ECC255C00DDED27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88C5CDB01DB0CA6200828F49 /* Assets.xcassets */; };
 		88C5CDA61DB0CA6200828F49 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C5CDA51DB0CA6200828F49 /* main.m */; };
 		88C5CDA91DB0CA6200828F49 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C5CDA81DB0CA6200828F49 /* AppDelegate.m */; };
 		88C5CDAC1DB0CA6200828F49 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C5CDAB1DB0CA6200828F49 /* ViewController.m */; };
@@ -490,6 +491,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				886149CA1ECC22ED00DDED27 /* Info.plist in Resources */,
+				886149DE1ECC255C00DDED27 /* Assets.xcassets in Resources */,
 				88C5CDC91DB0CB4500828F49 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
